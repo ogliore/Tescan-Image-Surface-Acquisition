@@ -22,4 +22,4 @@ Work Flow:
 4) Run TescanImageSnapper.m (Matlab script) on the .hdr files obtained in (1) using the Z stage value obtained in (2). This script will write ImageSnapper.xml
 5) Load ImageSnapper.xml into Image Snapper, change relevant Image Snapper parameters (Auto Brightness / Contrast, Image Size, etc)
 6) Run ImageSnapper
-7) Run MoveImageSnapperFilesAndMakeMontage.sh on the folder acquired in (6) to rename/move files and create the montage
+7) Run TescanRenameFilesMontage.sh on the folder acquired in (6) to rename/move files and create the montage
