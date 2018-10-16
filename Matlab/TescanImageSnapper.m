@@ -1,12 +1,25 @@
 clear;
 close all;
 
-% If Zstage is not *exactly* as the SEM thinks it is, it will move the
-% stage and compromise the focus of the sample. We need to give the xml
-% file the exact same Z value so that the stage will not move. The value
-% recorded in the .hdr files, or shown in Stage Control, does not contain
-% enough digits! The value given by Shark SEM is enough:
-Zstage='4.02625'; % From GetStageZ.py, save as string with same digits as Python gives
+% Must save the ImageSnapper XML file for "Focus Map", enter its filename here:
+imagesnapperfocusmapfile='C:\Users\Tescan\Documents\ImageSnapper.xml';
+
+A=xml2struct(imagesnapperfocusmapfile);
+
+nsamples=numel(A.ImageSnapperProject.Samples.RectangleSample);
+
+ZStage_=cell(nsamples,1);
+
+for ii=1:nsamples
+ ZStage_{ii}=A.ImageSnapperProject.Samples.RectangleSample{ii}.Attributes.Z;
+end
+
+if numel(unique(ZStage_))~=1
+    disp('Different Z Stage values in XML!!!');
+    return
+else
+    ZStage=ZStage_{1};
+end
 
 docuts=1;% Switch to cut by WD (before outlier removal)
 
@@ -64,21 +77,7 @@ for ii=1:nfiles
     end
     ll=dd{index};
     WD(ii)=str2double(ll((numel(wdstr)+1):end));
-   
- 
-    ystr='StageY=';
-    ss=strfind(dd,ystr);
-    index = false(1, numel(ss));
-    for k = 1:numel(ss)
-      if numel(ss{k} == 1)==0
-         index(k) = 0;
-      else
-         index(k) = 1;
-      end     
-    end
-    ll=dd{index};
-    YStage(ii)=str2double(ll((numel(ystr)+1):end));
-    
+      
     xstr='StageX=';
     ss=strfind(dd,xstr);
     index = false(1, numel(ss));
@@ -91,6 +90,19 @@ for ii=1:nfiles
     end
     ll=dd{index};
     XStage(ii)=str2double(ll((numel(xstr)+1):end));
+    
+    ystr='StageY=';
+    ss=strfind(dd,ystr);
+    index = false(1, numel(ss));
+    for k = 1:numel(ss)
+      if numel(ss{k} == 1)==0
+         index(k) = 0;
+      else
+         index(k) = 1;
+      end     
+    end
+    ll=dd{index};
+    YStage(ii)=str2double(ll((numel(ystr)+1):end));
     
 end
 
