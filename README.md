@@ -17,7 +17,7 @@ Challenges:
 
 Work Flow:
 1) Mount sample and tune SEM.
-2) Acquire a set of focus map images via ImageSnapper at the appropriate WD & Z values
+2) Acquire a set of focus map images via ImageSnapper (rectangle) at the appropriate WD & Z values
 3) Save this focus map ImageSnapper XML file and enter its filename into "TescanImageSnapper.m"
 4) Run TescanImageSnapper.m (Matlab script) on the .hdr files obtained in (1) using the Z stage value obtained in (2). This script will write ImageSnapper.xml
 5) Load ImageSnapper.xml into Image Snapper, change relevant Image Snapper parameters (Auto Brightness / Contrast, Image Size, etc)
