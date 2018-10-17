@@ -1,14 +1,29 @@
 clear;
 close all;
 
-% Must save the ImageSnapper XML file for "Focus Map", enter its filename here:
-imagesnapperfocusmapfile='C:\Users\Tescan\Documents\ImageSnapper.xml';
+fov=250; % in microns
 
-A=xml2struct(imagesnapperfocusmapfile);
+overlap_fraction=0.05; % 10% = 0.1
+
+docuts=1;% Switch to cut by WD (before outlier removal)
+WD_min=14e-3;
+WD_max=16e-3;
+
+dooutliers=1; % Switch to remove outliers
+
+doremovepoints=0; % Switch to particular points (after the two prior cuts)
+
+
+% Must save the ImageSnapper XML file for "Focus Map", enter its filename here:
+imagesnapperfocusmapfile='C:\Users\Tescan\Documents\RenazzoFocusMapImageSnapper.xml';
+
+A=xml2struct(imagesnapperfocusmapfile); % https://www.mathworks.com/matlabcentral/fileexchange/28518-xml2struct
 
 nsamples=numel(A.ImageSnapperProject.Samples.RectangleSample);
 
-ZStage_=cell(nsamples,1);
+if nsamples>1 
+    
+    ZStage_=cell(nsamples,1);
 
 for ii=1:nsamples
  ZStage_{ii}=A.ImageSnapperProject.Samples.RectangleSample{ii}.Attributes.Z;
@@ -19,35 +34,28 @@ if numel(unique(ZStage_))~=1
     return
 else
     ZStage=ZStage_{1};
+    samplename=A.ImageSnapperProject.Samples.RectangleSample{1}.Attributes.Name;
 end
 
-docuts=1;% Switch to cut by WD (before outlier removal)
-
-dooutliers=1; % Switch to remove outliers
-
-doremovepoints=0; % Switch to particular points (after the two prior cuts)
+else % only one sample
+    
+    ZStage=A.ImageSnapperProject.Samples.RectangleSample.Attributes.Z;
+    samplename=A.ImageSnapperProject.Samples.RectangleSample.Attributes.Name;
+    
+end
 
 surfaceshape='poly22'; % poly11=plane, poly22=surface quadratic
 
-fov=50; % in microns
+focusimagedir=[A.ImageSnapperProject.Settings.Attributes.Path '\' samplename '\'];
+parentpath=fileparts(A.ImageSnapperProject.Settings.Attributes.Path);
 
-overlap_fraction=0.05; % 10% = 0.1
-
-focusimagedir='G:\Ryan\Genesis_50684.10\Sample2\';
-
-imagepath='G:\Ryan\Genesis_50684.10\HighRes'; % Output directory for high-res images
+imagepath=[parentpath '\HighRes\']; % Output directory for high-res images
 
 if (~exist(imagepath, 'dir'))
     mkdir(imagepath); 
 end
 
-
-
-imageformat='jpeg';
-
-% Upload the .hdr files from autofocus map into the hdrfiles directory
-% Script will write an xml file which can be loaded into imagesnapper
-
+imageformat=A.ImageSnapperProject.Settings.Attributes.ImageFormat;
 
 
 imagedir=dir([focusimagedir '*hdr']);
@@ -108,7 +116,7 @@ end
 
 if docuts
        
-cut_index=WD<0.02;
+cut_index=WD>WD_min & WD<WD_max;
    
 WD=WD(cut_index);
 XStage=XStage(cut_index);
@@ -136,7 +144,7 @@ if doremovepoints
 
 end
 
-fprintf('%d files, %d outliers\n\n',nfiles,nfiles-numel(WD));
+fprintf('%d files, %d outliers\n',nfiles,nfiles-numel(WD));
     
 
 sf=fit([XStage,YStage],-WD,surfaceshape); 
@@ -178,9 +186,9 @@ for jj=1:nyv
     end
 end
 
+fprintf('%d images\n',size(coordn,1));
 
-res=writeImageSnapper(ptsxyz,Zstage,fov,coordn,imagepath,imageformat);
+res=writeImageSnapper(ptsxyz,ZStage,fov,coordn,imagepath,imageformat);
 
 fclose('all');
 
-sprintf('%d images',size(coordn,1))

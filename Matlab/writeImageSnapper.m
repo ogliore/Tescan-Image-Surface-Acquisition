@@ -13,7 +13,9 @@ imagebasename='Snap';
 
 npts=size(ptsxyz,1);
 
-fid=fopen('ImageSnapper.xml','w');
+fname='ImageSnapper.xml';
+
+fid=fopen(fname,'w');
 
 fprintf(fid,'<?xml version="1.0" encoding="utf-8" standalone="yes"?>\n');
 fprintf(fid,'<ImageSnapperProject>\n');
@@ -34,3 +36,5 @@ fprintf(fid,'</Samples>\n');
 fprintf(fid,'</ImageSnapperProject>\n');
 
 res=fclose(fid);
+
+fprintf('ImageSnapper XML written to: %s\n\n',[pwd '\' fname]);
