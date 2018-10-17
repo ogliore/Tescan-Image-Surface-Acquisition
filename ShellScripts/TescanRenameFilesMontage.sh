@@ -28,7 +28,9 @@ do
 echo $(printf "%03d" $i)
 montage -rotate -90 -geometry $3x-$MONTAGEOVERLAP -tile x1 $(printf $MONTAGEFORMATCODE $i)_*.$4 $MAGICK_TEMPORARY_PATH/stripimages_/strip$(printf $MONTAGEFORMATCODE $i).$4
 done
+
 montage -geometry 1x1+0-$MONTAGEOVERLAP'<' -tile 1x $MAGICK_TEMPORARY_PATH/stripimages_/strip*.$4 $5
+
 rm -rf $MAGICK_TEMPORARY_PATH/stripimages_
 
 ENDTIME=`date +%s`
