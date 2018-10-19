@@ -9,7 +9,12 @@
 
 STARTTIME=`date +%s`
 
-MONTAGEOVERLAP=$(echo "scale=2 ; $3*($2 / 2)/100" | bc)
+INCREASEOVERLAPFAC=1.21
+INCREASEOVERLAPFACSTRIP=1
+#0.18
+
+MONTAGEOVERLAP=$(echo "scale=2 ; $INCREASEOVERLAPFAC*$3*($2 / 2)/100" | bc)
+MONTAGEOVERLAPSTRIP=$(echo "scale=2 ; $INCREASEOVERLAPFACSTRIP*$3*($2 / 2)/100" | bc)
 
 cd $1
 
@@ -26,14 +31,17 @@ mkdir -p $MAGICK_TEMPORARY_PATH/stripimages_
 for i in $( seq 1 $NX )
 do
 echo $(printf "%03d" $i)
-montage -rotate -90 -geometry $3x-$MONTAGEOVERLAP -tile x1 $(printf $MONTAGEFORMATCODE $i)_*.$4 $MAGICK_TEMPORARY_PATH/stripimages_/strip$(printf $MONTAGEFORMATCODE $i).$4
+montage -tile x1 -geometry $3x-$MONTAGEOVERLAP  $(ls -1 *_$(printf $MONTAGEFORMATCODE $i).$4 | sort -r) $MAGICK_TEMPORARY_PATH/stripimages_/strip$(printf $MONTAGEFORMATCODE $i).$4
 done
 
-montage -geometry 1x1+0-$MONTAGEOVERLAP'<' -tile 1x $MAGICK_TEMPORARY_PATH/stripimages_/strip*.$4 $5
+montage -tile 1x -geometry 1x1+0-$MONTAGEOVERLAPSTRIP'<' $MAGICK_TEMPORARY_PATH/stripimages_/strip*.$4 $5
 
 rm -rf $MAGICK_TEMPORARY_PATH/stripimages_
 
 ENDTIME=`date +%s`
+
+# To create DeepZoom files for use with OpenSeaDragon:
+# vips dzsave Renazzo_Panorama.jpg RenazzoN1126 --suffix .jpg[Q=100]
 
 echo Run time = $((ENDTIME-STARTTIME)) seconds
 
