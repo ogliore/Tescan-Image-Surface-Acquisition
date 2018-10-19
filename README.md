@@ -13,7 +13,7 @@ The solution we’ve developed is to acquire a set of low-resolution images with
 Challenges:
 1) To change the working-distance for each image, ImageSnapper requires that each image be acquired as a separate “Sample”. This makes for a large number of directories and does not allow for stitching within the Tescan software. Solution: We move and rename all acquired image with a simply bash script, and stitch the images manually (without correlation matching) using “montage” (ImageMagick).
 
-2) The Z stage value written out in the hdr file does not contain enough digits. Image Snapper will interpret this less-precise Z stage value as a different Z, move the stage a little bit, which ruins the focus height for all the images. Solution: Acquire the true Z stage value via a Shark SEM python script.
+2) The Z stage value written out in the hdr file does not contain enough digits. Image Snapper will interpret this less-precise Z stage value as a different Z, move the stage a little bit, which ruins the focus height for all the images. Solution: Read the Z values from the ImageSnapper XML file saved from the focus map.
 
 Work Flow:
 1) Mount sample and tune SEM.
