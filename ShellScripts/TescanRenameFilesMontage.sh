@@ -9,7 +9,9 @@
 # montage memory issues: https://github.com/ImageMagick/ImageMagick/issues/396
 # First test this script on four images from the middle of the panorama. Must rename the images to 001_001.jpg, 001_002.jpg, 002_001.jpg, 002_002.jpg. Adjust $2 and $3 until blend is good.
 # Max supported dimension for imagemagick is 65500 pixels
-# nm/pixel for panorama will be: (original image nm/pixel) * ($4/original-image-size)
+# nm/pixel for panorama will be: (original image nm/pixel) * (original-image-size/$4)
+# For example if original image 1536x1536 pixel image is 100 nm/pixel (in hdr file) and tile size is 150:
+# Panorama will be 100 * 1536/250 = 614.4 nm/pixel
 # ./TescanRenameFilesMontage.sh ~/Data/Tescan/Ryan/Kapoeta-67331/Mosaic02 9.1 7.6 250 jpg ~/Documents/KapoetaPano.jpg
 
 STARTTIME=`date +%s`
