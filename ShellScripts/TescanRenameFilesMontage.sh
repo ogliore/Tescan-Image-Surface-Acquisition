@@ -31,7 +31,7 @@ MONTAGEFORMATCODE=%0${#FIRSTROW}d
 find -regex '\./[0-9_]+' -type d -exec mv -n -- {}/Snap_1.$5 {}.$5 2>/dev/null \;
 find -regex '\./[0-9_]+' -type d -exec mv -n -- {}/Snap_1-$5.hdr {}-$5.hdr 2>/dev/null \; -empty -delete
 
-NX=$(ls -l *_$FIRSTROW.$5 | wc -l)
+NX=$(ls -l $FIRSTROW_*.$5 | wc -l)
 
 mkdir -p $MAGICK_TEMPORARY_PATH/stripimages_
 
