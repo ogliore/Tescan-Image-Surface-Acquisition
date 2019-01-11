@@ -10,6 +10,7 @@
 # First test this script on four images from the middle of the panorama. Must rename the images to 001_001.jpg, 001_002.jpg, 002_001.jpg, 002_002.jpg. Adjust $2 and $3 until blend is good.
 # Max supported dimension for imagemagick is 65500 pixels
 # nm/pixel for panorama will be: (original image nm/pixel) * ($4/original-image-size)
+# ./TescanRenameFilesMontage.sh ~/Data/Tescan/Ryan/Kapoeta-67331/Mosaic02 9.1 7.6 250 jpg ~/Documents/KapoetaPano.jpg
 
 STARTTIME=`date +%s`
 
@@ -38,7 +39,7 @@ echo $(printf "%03d" $i)
 montage -tile x1 -geometry $4x-$MONTAGEOVERLAP  $(ls -1 *_$(printf $MONTAGEFORMATCODE $i).$5 | sort -r) $MAGICK_TEMPORARY_PATH/stripimages_/strip$(printf $MONTAGEFORMATCODE $i).$5
 done
 
-montage -tile 1x -geometry 1x1+0-$MONTAGEOVERLAPSTRIP'<' $MAGICK_TEMPORARY_PATH/stripimages_/strip*.$5 $6
+montage -tile 1x -geometry 1x1+0-$MONTAGEOVERLAPSTRIP'<' $MAGICK_TEMPORARY_PATH/stripimages_/strip*.$5 -quality 100 $6
 
 rm -rf $MAGICK_TEMPORARY_PATH/stripimages_
 
